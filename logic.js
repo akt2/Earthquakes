@@ -38,3 +38,17 @@ function createMap(quakes) {
     layers: [satellite, quakes]});
   L.control.layers(baseMaps, overlayMaps, {
     collapsed: false}).addTo(myMap);}
+
+d3.json(url, function(r) {
+  var drops = L.markerClusterGroup();
+  for (var x = 0; x < r.length; x++) {
+    var loc = r[x].place;
+    if (loc) {
+      drops.addLayer(L.marker([loc.coordinates[1], loc.coordinates[0]])
+        .bindPopup(r[x].descriptor));
+    }
+  }
+  myMap.addLayer(drops);
+
+  
+});
