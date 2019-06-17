@@ -47,15 +47,36 @@ function createFeatures(eqd) {
   // var latlng = function(feature) {L.latlng(feature.geometry.longitude, feature.geometry.latitude);};
   //  redefining latlng isn't necessary apparently.
   
-  function coloring(c) {
-    switch (c) {
-      case 'green': return '#50e292';
-      case 'yellow': return '#f6e683';
-      case 'orange': return '#f19f41';
-      case 'red': return '#f4391f';
-      default: return '#1fa9f4';
-    }
-  }
+  // function coloringAlert(a) {
+  //   switch (a) {
+  //     case 'green': return '#50e292';
+  //     case 'yellow': return '#f6e683';
+  //     case 'orange': return '#f19f41';
+  //     case 'red': return '#f4391f';
+  //     default: return '#1fa9f4';
+  //   }
+  // }
+  // function coloringMagcat(m) {
+  //   switch (m) {
+  //     case m<=1: return '#8dff1a';
+  //     case 1<m<=2: return '#e4ff4d';
+  //     case 2<m<=3: return '#fffe42';
+  //     case 3<m<=4: return '#ffd14d';
+  //     case 4<m<=5: return '#ff9c1a';
+  //     case 5<m<=6: return '#ff794d';
+  //     case 6<m<=7: return '#ff4242';
+  //     default: return '#ff4242';
+  //   }
+  // } // well that didn't work.
+  function coloringMagchlor(m) {
+    return m > 6 ? '#ff4242':
+           m > 5 ? '#ff794d':
+           m > 4 ? '#ff9c1a':
+           m > 3 ? '#ffd14d':
+           m > 2 ? '#fffe42':
+           m > 1 ? '#e4ff4d':
+           '#ff1fa9f4';
+  } // DID IT!!! 
   function sizing(s) {
     return s*5
   }
@@ -71,12 +92,14 @@ function createFeatures(eqd) {
 
 // NOW i need to figure out how to render the circle properties from the geojson.
 // I GOT SIZING TO WORK!!!!
+// Sizing currently reflects the alert, not the actually magnitude. It's categorical instead of continuous.
+// I could still grade the magnitude into categories.
 
   var quakes = L.geoJSON(eqd, {
     pointToLayer: function (feature, latlng) {return new L.CircleMarker(latlng,{
       radius: sizing(feature.properties.mag),
       fillOpacity: 0.7,
-      color: coloring(feature.properties.alert)
+      color: coloringMagchlor(feature.properties.mag)
     });},
     onEachFeature: function onEachFeature(feature, layer) {
       layer.bindPopup('<h2>'+feature.properties.place+'</h2><hr><p>'
