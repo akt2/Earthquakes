@@ -43,26 +43,58 @@ function createFeatures(eqd) {
   //           function sizing(feature) {return s = feature.properties.mag*10000});}
 
         // AHA!!! I have found the right place. but everything is broken and very unhappy. Map's still there though! :D
-  var circles = {
-    radius: 20,
-    // radius: function(feature) {return feature.properties.mag*5000},
-    // I MADE A CIRCLE!!!! 10000 is way too big.
-    color: '#e32636',
-    fillColor: '#ff6961',
-    opacity: 0.8,
-    fillOpacity: 0.5
-  };
-
+  
   // var latlng = function(feature) {L.latlng(feature.geometry.longitude, feature.geometry.latitude);};
-//  redefining latlng isn't necessary apparently.
+  //  redefining latlng isn't necessary apparently.
+  
+  function coloring(c) {
+    switch (c) {
+      case 'green': return '#50e292';
+      case 'yellow': return '#f6e683';
+      case 'orange': return '#f19f41';
+      case 'red': return '#f4391f';
+      default: return '#1fa9f4';
+    }
+  }
+  function sizing(s) {
+    return s*5
+  }
+  
+  // var circles = {
+  //   radius: 20,
+  //   // radius: function(feature) {return feature.properties.mag*5000},
+  //   // I MADE A CIRCLE!!!! 10000 is way too big.
+  //   color: '#e32636',
+  //   fillColor: coloring(feature.properties.alert),
+  //   opacity: 0.8,
+  //   fillOpacity: 0.5}
+
+// NOW i need to figure out how to render the circle properties from the geojson.
+// I GOT SIZING TO WORK!!!!
 
   var quakes = L.geoJSON(eqd, {
-    pointToLayer: function (feature, latlng) {return new L.CircleMarker(latlng,circles)},
+    pointToLayer: function (feature, latlng) {return new L.CircleMarker(latlng,{
+      radius: sizing(feature.properties.mag),
+      fillOpacity: 0.7,
+      color: coloring(feature.properties.alert)
+    });},
     onEachFeature: function onEachFeature(feature, layer) {
       layer.bindPopup('<h2>'+feature.properties.place+'</h2><hr><p>'
       +new Date(feature.properties.time).toDateString()+'</p><hr><p>Magnitude: '
       +feature.properties.mag+'</p>')}});
-        
+
+      // Putting this variable here instead of above does weird things. Probably punctuation related.
+
+  // var circles = {
+  //   radius: 20,
+  //   // radius: function(feature) {return feature.properties.mag*5000},
+  //   // I MADE A CIRCLE!!!! 10000 is way too big.
+  //   color: '#e32636',
+  //   fillColor: '#ff6961',
+  //   opacity: 0.8,
+  //   fillOpacity: 0.5
+  // }
+       
   createMap(quakes);}
 
 
